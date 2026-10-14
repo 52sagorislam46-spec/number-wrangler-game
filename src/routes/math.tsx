@@ -1,6 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
-import { ArrowRight, ChevronDown, Clock3, Flag, History, Keyboard, Medal, Pause, Play, RotateCcw, Settings2, Sparkles, Swords, Trophy, User, Users, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronDown, Clock3, Flag, History, Keyboard, Medal, Pause, Play, RotateCcw, Settings2, Sparkles, Swords, Trophy, User, Users, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -117,7 +117,7 @@ function MathGame() {
     <header className="site-header"><div className="header-inner">
       <a href="/" className="brand" aria-label="Tug of Math home"><span className="brand-mark"><Swords size={23} /></span><span>Tug of<span className="brand-math"> Math</span><span className="brand-dot">.</span></span></a>
       <span className="classroom-badge"><span /> CLASSROOM EDITION</span>
-      <div className="header-actions"><Button variant="ghost" onClick={openHistory} className="history-button"><History /><span>Match history</span></Button><span className="header-divider" /><Button variant="ghost" size="icon" onClick={toggleMute} aria-label={muted ? 'Enable sound' : 'Mute sound'} title={muted ? 'Enable sound' : 'Mute sound'}>{muted ? <VolumeX /> : <Volume2 />}</Button><Button variant="ghost" size="icon" onClick={openHelp} aria-label="Keyboard controls and game rules" title="Keyboard controls & rules"><Keyboard /></Button></div>
+      <div className="header-actions"><Button asChild variant="ghost"><Link to="/" aria-label="হোমে ফিরুন"><ArrowLeft /><span>হোম</span></Link></Button><Button variant="ghost" onClick={openHistory} className="history-button"><History /><span>Match history</span></Button><span className="header-divider" /><Button variant="ghost" size="icon" onClick={toggleMute} aria-label={muted ? 'Enable sound' : 'Mute sound'} title={muted ? 'Enable sound' : 'Mute sound'}>{muted ? <VolumeX /> : <Volume2 />}</Button><Button variant="ghost" size="icon" onClick={openHelp} aria-label="Keyboard controls and game rules" title="Keyboard controls & rules"><Keyboard /></Button></div>
     </div></header>
     <main className="main-content">
       <section className="page-heading"><div className="heading-eyebrow"><span className="eyebrow-line" /><Swords size={14} /> THE ULTIMATE BRAIN BATTLE <span className="eyebrow-line" /></div><h1>Tug of War<span className="title-colon">:</span> <span>Mathematics</span></h1><p>A little brainpower. A lot of team spirit.</p></section>
