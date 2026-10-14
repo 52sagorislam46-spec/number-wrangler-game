@@ -1,7 +1,8 @@
-export type BcsQuestion = { q: string; options: [string, string, string, string]; answer: 0 | 1 | 2 | 3; subject: string };
+import { extraQuestions } from './bcs-bank-extra';
+export type BcsQuestion = { q: string; options: [string, string, string, string]; answer: 0 | 1 | 2 | 3; subject: string; explain?: string };
 
 // Verified, well-established BCS preliminary facts. `answer` is the index of the correct option.
-export const bcsQuestions: BcsQuestion[] = [
+const baseQuestions: BcsQuestion[] = [
   { subject: 'বাংলাদেশ', q: 'বাংলাদেশের জাতীয় সংসদ ভবনের স্থপতি কে?', options: ['লুই আই কান', 'এফ. আর. খান', 'মাজহারুল ইসলাম', 'হামিদুর রহমান'], answer: 0 },
   { subject: 'বাংলাদেশ', q: 'কেন্দ্রীয় শহীদ মিনারের স্থপতি কে?', options: ['মৈনুল হোসেন', 'হামিদুর রহমান', 'লুই আই কান', 'নভেরা আহমেদ'], answer: 1 },
   { subject: 'বাংলাদেশ', q: 'জাতীয় স্মৃতিসৌধের স্থপতি কে?', options: ['হামিদুর রহমান', 'মৈনুল হোসেন', 'সৈয়দ আব্দুল্লাহ খালিদ', 'মাজহারুল ইসলাম'], answer: 1 },
@@ -55,6 +56,23 @@ export const bcsQuestions: BcsQuestion[] = [
   { subject: 'গণিত', q: '১ থেকে ১০ পর্যন্ত মৌলিক সংখ্যা কয়টি?', options: ['৩টি', '৪টি', '৫টি', '৬টি'], answer: 1 },
   { subject: 'গণিত', q: 'একটি ত্রিভুজের তিন কোণের সমষ্টি কত?', options: ['৯০°', '১৮০°', '২৭০°', '৩৬০°'], answer: 1 },
 ];
+
+export const SUBJECTS = ['বাংলা ভাষা ও সাহিত্য', 'ইংরেজি ভাষা ও সাহিত্য', 'বাংলাদেশ বিষয়াবলী', 'আন্তর্জাতিক বিষয়াবলী', 'সাধারণ বিজ্ঞান ও তথ্যপ্রযুক্তি', 'ভূগোল, পরিবেশ ও দুর্যোগ ব্যবস্থাপনা', 'গাণিতিক যুক্তি ও মানসিক দক্ষতা', 'নৈতিকতা, মূল্যবোধ ও সুশাসন'] as const;
+const subjectMap: Record<string, string> = { 'বাংলা ব্যাকরণ': SUBJECTS[0], 'বাংলা সাহিত্য': SUBJECTS[0], 'বাংলাদেশ': SUBJECTS[2], 'আন্তর্জাতিক': SUBJECTS[3], 'বিজ্ঞান': SUBJECTS[4], 'গণিত': SUBJECTS[6] };
+export const bcsQuestions: BcsQuestion[] = [...baseQuestions.map(q => ({ ...q, subject: subjectMap[q.subject] ?? q.subject })), ...extraQuestions];
+
+export type QuizMode = 'quick' | 'subject' | 'model';
+export const MODE_TIME: Record<QuizMode, number> = { quick: 10, subject: 20, model: 30 };
+export const NEGATIVE_MARK = 0.5;
+export function computeScore(correct: number, wrong: number, negative: boolean) { return correct - (negative ? wrong * NEGATIVE_MARK : 0); }
+
+/** Shuffled deck that never repeats a question until the whole pool has been used. */
+export function makeDeck(subject: string | null, rand = Math.random) {
+  const pool = subject ? bcsQuestions.filter(q => q.subject === subject) : bcsQuestions;
+  let queue: BcsQuestion[] = [];
+  return () => { if (!queue.length) queue = shuffle(pool, rand); return queue.pop()!; };
+}
+function shuffle<T>(arr: T[], rand: () => number) { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); const t = a[i]!; a[i] = a[j]!; a[j] = t; } return a; }
 
 export const QUESTION_TIME = 10;
 export const ROUND_SIZE = 20;
